@@ -22,4 +22,15 @@ Route::prefix('auth')->group(function(){
     Route::post('logout','UsuarioController@logout');
     Route::post('login','UsuarioController@login');
     Route::post('register','UsuarioController@register');
+    Route::post('update','UsuarioController@update');
+    Route::post('imagen','UsuarioController@imagen');
+});
+
+Route::prefix('referidos')->group(function(){
+    Route::get('listado','ReferidosController@listado');
+});
+
+Route::prefix('ticket')->group(function(){
+    Route::post('crear','TicketController@crear');
+    Route::get('listado','TicketController@listado');
 });

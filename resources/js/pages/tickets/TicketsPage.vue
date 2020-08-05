@@ -1,8 +1,41 @@
 <template>
 <div class="container-fluid">
+    <div class="modal fade" id="modalticket" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" v-on:submit.prevent="crearTicket()">
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" class="form-control" v-model="subject_ticket">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" rows="5" v-model="description_ticket"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" :disabled="loadingSubmit">Create</button>
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tickets List</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-list fa-sm text-white-50"></i> New Ticket</a>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" @click.prevent="openModalTicket()"><i class="fas fa-list fa-sm text-white-50"></i> New Ticket</button>
     </div>
 
     <div class="row">
@@ -66,113 +99,59 @@
                   <h6 class="font-weight-bold text-primary">Tickets List</h6>
                 </div>
                 <div class="card-body">
+                    <div class="d-flex justify-content-center" v-if="loadingPage">
+                        <div class="spinner-border text-primary mt-4 mb-4" role="status">
+                        <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
+                                                <th>Id</th>
+                                                <th>Subject</th>
                                                 <th>Status</th>
-                                                <th>Title</th>
-                                                <th>ID</th>
-                                                <th>Created by</th>
-                                                <th>Date</th>
+                                                <th>Registration date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td><span class="badge badge-warning">In Progress</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Elegant Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Eric Pratt</td>
-                                                <td>2018/05/01</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-danger">Closed</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">AdminX Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">1234251</a></td>
-                                                <td>Nirav Joshi</td>
-                                                <td>2018/05/11</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-success">Pending</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Admin-Pro Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">1020345</a></td>
-                                                <td>Vishal Bhatt</td>
-                                                <td>2018/04/01</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-warning">In Progress</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Elegant Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">7810203</a></td>
-                                                <td>Eric Pratt</td>
-                                                <td>2018/01/01</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-warning">In Progress</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">AdminX Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">2103450</a></td>
-                                                <td>Nirav Joshi</td>
-                                                <td>2018/05/01</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-warning">In Progress</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Admin-Pro Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">2140530</a></td>
-                                                <td>Vishal Bhatt</td>
-                                                <td>2018/07/01</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-success">Pending</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Elegant Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">4500123</a></td>
-                                                <td>Eric Pratt</td>
-                                                <td>2018/05/10</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-danger">Closed</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Elegant Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">1230450</a></td>
-                                                <td>Eric Pratt</td>
-                                                <td>2018/05/14</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-danger">Closed</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">AdminX Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">1240503</a></td>
-                                                <td>Nirav Joshi</td>
-                                                <td>2018/02/01</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="badge badge-success">Pending</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Admin-Pro Theme Side Menu Open OnClick</a></td>
-                                                <td><a href="ticket-detail.html" class="font-bold link">1250304</a></td>
-                                                <td>Vishal Bhatt</td>
-                                                <td>2018/05/21</td>
+                                            <tr v-for="item in data">
+                                                <td>{{ item.id }}</td>
+                                                <td>
+                                                    <a href="#" @click.prevent="detalleTicket(item.id)">{{ item.titulo }}</a>
+                                                </td>
+                                                <td>
+                                                    <span v-bind:class="'badge badge-'+item.color">{{ item.descripcion }}</span>
+                                                </td>
+                                                <td>{{ item.created_at }}</td>
                                             </tr>
                                         </tbody>
-                                        <tfoot>
+                                        <tfoot v-if="paginas>0">
                                             <tr>
+                                                <th>Id</th>
+                                                <th>Subject</th>
                                                 <th>Status</th>
-                                                <th>Title</th>
-                                                <th>ID</th>
-                                                <th>Created by</th>
-                                                <th>Date</th>
+                                                <th>Registration date</th>
                                             </tr>
                                         </tfoot>
                                     </table>
-                                    <div class="d-flex align-items-center justify-content-end">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                            </li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">Next</a>
-                                            </li>
-                                        </ul>
+                                    <div class="d-flex align-items-center justify-content-end" v-if="paginas>0">
+                                        <paginate
+                                        :page-count="paginas"
+                                            :prev-text="'Prev'"
+                                            :next-text="'Next'"
+                                            :container-class="'pagination'"
+                                            :page-class="'page-item'"
+                                            :page-link-class="'page-link'"
+                                            :prev-class="'page-item'"
+                                            :prev-link-class="'page-link'"
+                                            :next-class="'page-item'"
+                                            :next-link-class="'page-link'"
+                                            :active-class="'active'"
+                                            :disabled-class="'disabled'"
+                                            :click-handler="clickPage"
+                                        >
+                                        </paginate>
                                     </div>
                                 </div>
                 </div>
@@ -184,10 +163,84 @@
 
 <script>
 export default {
+    data(){
+        return{
+            req: axios.create({
+                baseUrl:  BASE_URL
+            }),
+            subject_ticket: '',
+            description_ticket: '',
+            loadingSubmit: false,
+            loadingPage: false,
+            data: [],
+            paginas: 0,
+        }
+    },
     mounted() {
-    
+        this.getListado();
     },
     methods:{
+        clickPage: function(pageNum) {
+            this.loadingPage = true;
+            this.req.get(`ticket/listado?page=${pageNum}`).then( response => {
+                this.loadingPage = false;
+                let tickets = response.data.tickets;
+                this.data = tickets.data;
+            }).catch( error =>{
+                this.loadingPage = false;
+              console.log(error);
+            });
+        },
+        openModalTicket:function(){
+          this.subject_ticket = '';
+          this.description_ticket = '';
+          $('#modalticket').modal('show');
+        },
+        crearTicket(){
+            this.errors = [];
+            this.loadingSubmit = true;
+            let data = {
+              subject_ticket: this.subject_ticket,
+              description_ticket: this.description_ticket,
+            }
+            this.req.post('ticket/crear',data).then( response =>{
+                this.loadingSubmit = false; 
+                this.subject_ticket='';
+                this.description_ticket='';
+                this.getListado();
+                $('#modalticket').modal('hide');
+                console.log(response.data.tickets);
+                this.$swal({
+                  title: '',
+                  text: response.data.message,
+                  icon: 'success',
+                });
+            }).catch( error =>{
+              this.loadingSubmit = false; 
+              if(error.response.data.errors) this.errors = error.response.data.errors;
+              this.$swal({
+                title: '',
+                text: error.response.data.message,
+                icon: 'warning',
+              });
+            });
+        },
+        getListado(){
+            this.loadingPage = true;
+            this.req.get('ticket/listado').then( response => {
+                this.loadingPage = false;
+                let tickets = response.data.tickets;
+                this.paginas = tickets.to;
+                this.data = tickets.data;
+                console.log(response);
+            }).catch( error =>{
+                this.loadingPage = false;
+                console.log(error);
+            });
+        },
+        detalleTicket(id){
+            this.$router.push({ path: `/tickets-detalle/${id}` });
+        }
     }
 }
 </script>

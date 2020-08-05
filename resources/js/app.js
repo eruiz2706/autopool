@@ -7,6 +7,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import VueSweetalert2 from 'vue-sweetalert2';
+import Paginate from 'vuejs-paginate'
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import App from './App.vue';
@@ -46,6 +47,7 @@ const store = new Vuex.Store({
 });
   
 //Vue.use(Vuex);
+Vue.component('paginate', Paginate);
 Vue.use(VueSweetalert2);
 Vue.use(VueRouter);
 //Vue.config.devtools = false

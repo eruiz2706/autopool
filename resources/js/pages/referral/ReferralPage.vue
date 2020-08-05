@@ -8,118 +8,60 @@
             <div class="col-md-12">
                 <div class="card shadow ">
                 <div class="card-header pt-4">
-                  <h6 class="font-weight-bold text-primary">Referral List</h6>
+                    <h6 class="font-weight-bold text-primary">
+                      Referral List
+                    </h6>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                                    <table class="table table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Transaction Id</th>
-                                                <th>Coin</th>
-                                                <th>Amount</th>
-                                                <th>Date</th>
-                                                <th>Time</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                           <tr>
-                                                <th>Transaction Id</th>
-                                                <th>Coin</th>
-                                                <th>Amount</th>
-                                                <th>Date</th>
-                                                <th>Time</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                    <div class="d-flex align-items-center justify-content-end">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                            </li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">Next</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                    <div class="d-flex justify-content-center" v-if="loadingPage">
+                        <div class="spinner-border text-primary mt-4 mb-4" role="status">
+                        <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive" >
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Registration date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in data">
+                                    <td>{{ item.username }}</td>
+                                    <td>{{ item.email }}</td>
+                                    <td>{{ item.created_at }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot v-if="paginas>0">
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Registration date</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="d-flex align-items-center justify-content-end" v-if="paginas>0">
+                            <paginate
+                            :page-count="paginas"
+                                :prev-text="'Prev'"
+                                :next-text="'Next'"
+                                :container-class="'pagination'"
+                                :page-class="'page-item'"
+                                :page-link-class="'page-link'"
+                                :prev-class="'page-item'"
+                                :prev-link-class="'page-link'"
+                                :next-class="'page-item'"
+                                :next-link-class="'page-link'"
+                                :active-class="'active'"
+                                :disabled-class="'disabled'"
+                                :click-handler="clickPage"
+                            >
+                            </paginate>
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>
@@ -129,11 +71,45 @@
 
 <script>
 export default {
+    data(){
+        return{
+            req: axios.create({
+                baseUrl:  BASE_URL
+            }),
+            data: [],
+            paginas: 0,
+            loadingPage: false
+        }
+    },
     mounted() {
-    
+        this.getListado();
     },
     methods:{
-    }
+        clickPage: function(pageNum) {
+            this.loadingPage = true;
+            this.req.get(`referidos/listado?page=${pageNum}`).then( response => {
+                this.loadingPage = false;
+                let referidos = response.data.referidos;
+                this.data = referidos.data;
+            }).catch( error =>{
+                this.loadingPage = false;
+              console.log(error);
+            });
+        },
+        getListado(){
+            this.loadingPage = true;
+            this.req.get('referidos/listado').then( response => {
+                this.loadingPage = false;
+                let referidos = response.data.referidos;
+                this.paginas = referidos.to;
+                this.data = referidos.data;
+                console.log(referidos);
+            }).catch( error =>{
+                this.loadingPage = false;
+                console.log(error);
+            });
+        }
+    },
 }
 </script>
 

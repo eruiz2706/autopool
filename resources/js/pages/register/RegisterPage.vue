@@ -23,6 +23,11 @@
                   <input type="text" class="form-control form-control-user" placeholder="Id Payeer" v-bind:class="[errors.payeer ? 'is-invalid' : '']"  v-model="payeer">
                   <span class="text-danger" v-if="errors.payeer" v-text='errors.payeer[0]'></span>
                 </div>
+
+                <div class="form-group">
+                  <input type="text" class="form-control form-control-user" placeholder="Referral Code" v-bind:class="[errors.referido_id ? 'is-invalid' : '']"  v-model="referido_id">
+                  <span class="text-danger" v-if="errors.referido_id" v-text='errors.referido_id[0]'></span>
+                </div>
                 <button  class="btn btn-primary btn-user btn-block" type="submit" :disabled="loadingSubmit">
                   Register Account
                 </button>
@@ -52,11 +57,12 @@ export default {
             loadingSubmit: false,
             username: '',
             email: '',
-            payeer: ''
+            payeer: '',
+            referido_id: ''
         }
     },
     mounted() {
-      
+      this.logout();
     },
     methods:{
         onSubmit(){
@@ -65,7 +71,8 @@ export default {
             let data = {
               username: this.username,
               email: this.email,
-              payeer: this.payeer
+              payeer: this.payeer,
+              referido_id: this.referido_id
             }
             console.log(data);
             this.req.post('auth/register',data).then( response =>{
@@ -87,7 +94,12 @@ export default {
               });
             });
             
-        }
+        },
+        logout(){
+          this.req.post('auth/logout').then( response => {
+            this.$store.commit('logoutUser',null);
+          });
+        },
     }
 }
 </script>

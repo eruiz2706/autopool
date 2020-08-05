@@ -12,6 +12,7 @@ import Lottery from './pages/lottery/LotteryPage';
 import Profile from './pages/profile/ProfilePage';
 import Referral from './pages/referral/ReferralPage';
 import Tickets from './pages/tickets/TicketsPage';
+import TicketsDetalle from './pages/tickets/TicketsDetallePage';
 
 export default [
     {
@@ -28,6 +29,11 @@ export default [
         path : '',
         component: AppContent,
         children: [
+            { 
+                path: '/', 
+                component: Dashboard,
+                name:'dashboard'
+            },
             { 
                 path: '/dashboard', 
                 component: Dashboard,
@@ -82,6 +88,11 @@ export default [
                 path: '/tickets', 
                 component: Tickets,
                 name:'tickets'
+            },
+            { 
+                path: '/tickets-detalle/:id', 
+                component: TicketsDetalle,
+                name:'tickets-detalle'
             },
         ]
     },

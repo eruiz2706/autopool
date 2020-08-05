@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('payeer')->unique();
             $table->string('email');
             $table->integer('referido_id')->nullable();
+            $table->string('imagen')->nullable();
             $table->string('password');
             $table->string('rol');
             $table->timestamps();
