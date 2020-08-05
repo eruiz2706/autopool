@@ -18,9 +18,9 @@ class CreateTicketTable extends Migration
             $table->id();
             $table->string('titulo');
             $table->integer('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->integer('estado_id')->unsigned()->index();
-            $table->foreign('estado_id')->references('id')->on('estados')->onDelete('cascade');
+            $table->foreign('estado_id')->references('id')->on('estados');
             $table->timestamps();
         });
     }

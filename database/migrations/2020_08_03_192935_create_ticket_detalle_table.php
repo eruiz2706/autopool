@@ -17,9 +17,9 @@ class CreateTicketDetalleTable extends Migration
             $table->engine = 'InnoDB';
             $table->id();
             $table->integer('ticket_id')->unsigned()->index();
-            $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
+            $table->foreign('ticket_id')->references('id')->on('tickets');
             $table->integer('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->text('descripcion');
             $table->timestamps();
         });
