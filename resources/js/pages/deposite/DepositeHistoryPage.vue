@@ -15,92 +15,29 @@
                                     <table class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Transaction Id</th>
-                                                <th>Coin</th>
-                                                <th>Amount</th>
-                                                <th>Date</th>
-                                                <th>Time</th>
+                                                <th>Id</th>
+                                                <th>Monto</th>
+                                                <th>Confirmacion</th>
+                                                <th>Payeer</th>
+                                                <th>Fecha</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="ticket-detail.html" class="font-bold link">276377</a></td>
-                                                <td>Rub</td>
-                                                <td>100</td>
-                                                <td>2018/05/01</td>
-                                                <td>12:05pm</td>
+                                            <tr v-for="deposito in depositos">
+                                                <td>{{ deposito.id }}</td>
+                                                <td>{{ deposito.monto }}</td>
+                                                <td>{{ deposito.idconfirmacion }}</td>
+                                                <td>{{ deposito.id_user }}</td>
+                                                <td>{{ deposito.created_at }}</td>
                                             </tr>
                                         </tbody>
                                         <tfoot>
                                            <tr>
-                                                <th>Transaction Id</th>
-                                                <th>Coin</th>
-                                                <th>Amount</th>
-                                                <th>Date</th>
-                                                <th>Time</th>
+                                                <th>Id</th>
+                                                <th>Monto</th>
+                                                <th>Confirmacion</th>
+                                                <th>Payeer</th>
+                                                <th>Fecha</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -129,10 +66,25 @@
 
 <script>
 export default {
+    data(){
+        return {
+            req: axios.create({
+                baseUrl:  BASE_URL
+            }),
+            depositos: {}
+        }
+    },
     mounted() {
-    
+        this.getDepositos();
     },
     methods:{
+        getDepositos(){
+            this.req.get('auth/depositehis').then((response)=>{
+                this.depositos = response.data.depositos;  
+            }, (response)=>{
+                console.log(response.data);
+            });
+        }
     }
 }
 </script>

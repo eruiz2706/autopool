@@ -22,4 +22,6 @@ Route::prefix('auth')->group(function(){
     Route::post('logout','UsuarioController@logout');
     Route::post('login','UsuarioController@login');
     Route::post('register','UsuarioController@register');
+    Route::post('depositeregister','DepositoController@register');
+    Route::get('depositehis', 'DepositoController@init'); 
 });
