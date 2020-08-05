@@ -14,6 +14,7 @@ class CreateTicketTable extends Migration
     public function up()
     {
         Schema::create('tickets', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->string('titulo');
             $table->integer('user_id')->unsigned()->index();

@@ -14,6 +14,7 @@ class CreateTicketDetalleTable extends Migration
     public function up()
     {
         Schema::create('ticket_detalles', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->integer('ticket_id')->unsigned()->index();
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
