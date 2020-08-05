@@ -14,7 +14,6 @@ class CreateDepositosTable extends Migration
     public function up()
     {
         Schema::create('depositos', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
             $table->id();
             $table->double('monto', 15, 3);
             $table->string('idconfirmacion');
