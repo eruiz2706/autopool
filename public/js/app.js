@@ -2527,72 +2527,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {},
-  methods: {}
+  data: function data() {
+    return {
+      req: axios.create({
+        baseUrl: BASE_URL
+      }),
+      depositos: {}
+    };
+  },
+  mounted: function mounted() {
+    this.getDepositos();
+  },
+  methods: {
+    getDepositos: function getDepositos() {
+      var _this = this;
+
+      this.req.get('auth/depositehis').then(function (response) {
+        _this.depositos = response.data.depositos;
+      }, function (response) {
+        console.log(response.data);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -2695,9 +2652,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      req: axios.create({
+        baseUrl: BASE_URL
+      }),
+      errors: [],
+      loadingSubmit: false,
+      monto: ''
+    };
+  },
   mounted: function mounted() {},
-  methods: {}
+  methods: {
+    select: function select(event) {
+      var targetId = event.currentTarget.id;
+      var i;
+      var x = document.getElementsByClassName('card bg-primary text-white shadow');
+
+      for (i = 0; i < x.length; i++) {
+        x[i].className = "card bg-light text-black shadow";
+      }
+
+      document.getElementById(targetId).className = "card bg-primary text-white shadow";
+
+      if (targetId != "CUST") {
+        document.getElementById('amount').value = targetId;
+      }
+    },
+    sendValue: function sendValue(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById('amount').value = document.getElementById('custom').value;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      this.monto = document.getElementById('amount').value;
+      this.errors = [];
+      this.loadingSubmit = true;
+      var data = {
+        monto: this.monto
+      };
+      console.log(data);
+      this.req.post('auth/depositeregister', data).then(function (response) {
+        _this.loadingSubmit = false;
+
+        _this.$swal({
+          title: '',
+          text: response.data.message,
+          icon: 'success'
+        });
+
+        _this.$router.push('/dashboard');
+      })["catch"](function (error) {
+        _this.loadingSubmit = false;
+        if (error.response.data.errors) _this.errors = error.response.data.errors;
+
+        _this.$swal({
+          title: '',
+          text: error.response.data.message,
+          icon: 'warning'
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -25709,347 +25731,162 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container-fluid" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card shadow " }, [
+          _vm._m(1),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c(
+                "table",
+                { staticClass: "table table-striped table-bordered" },
+                [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.depositos, function(deposito) {
+                      return _c("tr", [
+                        _c("td", [_vm._v(_vm._s(deposito.id))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(deposito.monto))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(deposito.idconfirmacion))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(deposito.id_user))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(deposito.created_at))])
+                      ])
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _vm._m(3)
+                ]
+              ),
+              _vm._v(" "),
+              _vm._m(4)
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-sm-flex align-items-center justify-content-between mb-4"
-        },
-        [
-          _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
-            _vm._v("Deposite History")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("div", { staticClass: "card shadow " }, [
-            _c("div", { staticClass: "card-header pt-4" }, [
-              _c("h6", { staticClass: "font-weight-bold text-primary" }, [
-                _vm._v("Deposite History")
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "table-responsive" }, [
-                _c(
-                  "table",
-                  { staticClass: "table table-striped table-bordered" },
-                  [
-                    _c("thead", [
-                      _c("tr", [
-                        _c("th", [_vm._v("Transaction Id")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Coin")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Amount")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Date")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Time")])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("tbody", [
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ]),
-                      _vm._v(" "),
-                      _c("tr", [
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "font-bold link",
-                              attrs: { href: "ticket-detail.html" }
-                            },
-                            [_vm._v("276377")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("Rub")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("100")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("2018/05/01")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("12:05pm")])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("tfoot", [
-                      _c("tr", [
-                        _c("th", [_vm._v("Transaction Id")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Coin")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Amount")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Date")]),
-                        _vm._v(" "),
-                        _c("th", [_vm._v("Time")])
-                      ])
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "d-flex align-items-center justify-content-end"
-                  },
-                  [
-                    _c("ul", { staticClass: "pagination" }, [
-                      _c("li", { staticClass: "page-item disabled" }, [
-                        _c(
-                          "a",
-                          {
-                            staticClass: "page-link",
-                            attrs: { href: "#", tabindex: "-1" }
-                          },
-                          [_vm._v("Previous")]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "page-item active" }, [
-                        _c(
-                          "a",
-                          { staticClass: "page-link", attrs: { href: "#" } },
-                          [_vm._v("1")]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "page-item" }, [
-                        _c(
-                          "a",
-                          { staticClass: "page-link", attrs: { href: "#" } },
-                          [
-                            _vm._v("2 "),
-                            _c("span", { staticClass: "sr-only" }, [
-                              _vm._v("(current)")
-                            ])
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "page-item" }, [
-                        _c(
-                          "a",
-                          { staticClass: "page-link", attrs: { href: "#" } },
-                          [_vm._v("3")]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "page-item" }, [
-                        _c(
-                          "a",
-                          { staticClass: "page-link", attrs: { href: "#" } },
-                          [_vm._v("Next")]
-                        )
-                      ])
-                    ])
-                  ]
-                )
-              ])
+    return _c(
+      "div",
+      {
+        staticClass: "d-sm-flex align-items-center justify-content-between mb-4"
+      },
+      [
+        _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
+          _vm._v("Deposite History")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header pt-4" }, [
+      _c("h6", { staticClass: "font-weight-bold text-primary" }, [
+        _vm._v("Deposite History")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Monto")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Confirmacion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Payeer")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tfoot", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Monto")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Confirmacion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Payeer")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "d-flex align-items-center justify-content-end" },
+      [
+        _c("ul", { staticClass: "pagination" }, [
+          _c("li", { staticClass: "page-item disabled" }, [
+            _c(
+              "a",
+              {
+                staticClass: "page-link",
+                attrs: { href: "#", tabindex: "-1" }
+              },
+              [_vm._v("Previous")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item active" }, [
+            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+              _vm._v("1")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item" }, [
+            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+              _vm._v("2 "),
+              _c("span", { staticClass: "sr-only" }, [_vm._v("(current)")])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item" }, [
+            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+              _vm._v("3")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item" }, [
+            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+              _vm._v("Next")
             ])
           ])
         ])
-      ])
-    ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -26073,144 +25910,290 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container-fluid" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row", attrs: { id: "rubs" } }, [
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          {
+            staticClass: "card bg-light text-black shadow",
+            attrs: { id: "100" },
+            on: {
+              click: function($event) {
+                return _vm.select($event)
+              }
+            }
+          },
+          [_vm._m(1)]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          {
+            staticClass: "card bg-light text-black shadow",
+            attrs: { id: "200" },
+            on: {
+              click: function($event) {
+                return _vm.select($event)
+              }
+            }
+          },
+          [_vm._m(2)]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          {
+            staticClass: "card bg-light text-black shadow",
+            attrs: { id: "300" },
+            on: {
+              click: function($event) {
+                return _vm.select($event)
+              }
+            }
+          },
+          [_vm._m(3)]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          {
+            staticClass: "card bg-light text-black shadow",
+            attrs: { id: "500" },
+            on: {
+              click: function($event) {
+                return _vm.select($event)
+              }
+            }
+          },
+          [_vm._m(4)]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          {
+            staticClass: "card bg-light text-black shadow",
+            attrs: { id: "700" },
+            on: {
+              click: function($event) {
+                return _vm.select($event)
+              }
+            }
+          },
+          [_vm._m(5)]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          {
+            staticClass: "card bg-light text-black shadow",
+            attrs: { id: "CUST" },
+            on: {
+              click: function($event) {
+                return _vm.select($event)
+              }
+            }
+          },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("label", [_vm._v("CUSTOM")]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "form-control",
+                attrs: { type: "number", id: "custom", value: "0" },
+                on: {
+                  keyup: function($event) {
+                    return _vm.sendValue($event)
+                  }
+                }
+              })
+            ])
+          ]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        staticClass: "deposite",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.onSubmit($event)
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-8" }, [
+            _c("div", { staticClass: "card shadow mb-4" }, [
+              _vm._m(6),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body" }, [
+                _vm._m(7),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", [_vm._v("Amount")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.monto,
+                        expression: "monto"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { id: "amount", type: "text", value: "100" },
+                    domProps: { value: _vm.monto },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.monto = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "submit", disabled: _vm.loadingSubmit }
+                  },
+                  [_c("span", { staticClass: "text" }, [_vm._v("Pay")])]
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(8)
+        ])
+      ]
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-sm-flex align-items-center justify-content-between mb-4"
-        },
-        [
-          _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
-            _vm._v("Deposite")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-4 mb-4" }, [
-          _c("div", { staticClass: "card bg-primary text-white shadow" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    RUB\n                    "),
-              _c("div", { staticClass: "text-white-100 float-right" }, [
-                _vm._v("$ 100")
-              ])
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-4 mb-4" }, [
-          _c("div", { staticClass: "card bg-light text-black shadow" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    RUB\n                    "),
-              _c("div", { staticClass: "text-black-100 float-right" }, [
-                _vm._v("$ 200")
-              ])
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-4 mb-4" }, [
-          _c("div", { staticClass: "card bg-light text-black shadow" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    RUB\n                    "),
-              _c("div", { staticClass: "text-black-100 float-right" }, [
-                _vm._v("$ 300")
-              ])
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-4 mb-4" }, [
-          _c("div", { staticClass: "card bg-light text-black shadow" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    RUB\n                    "),
-              _c("div", { staticClass: "text-black-100 float-right" }, [
-                _vm._v("$ 500")
-              ])
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-4 mb-4" }, [
-          _c("div", { staticClass: "card bg-light text-black shadow" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    RUB\n                    "),
-              _c("div", { staticClass: "text-black-100 float-right" }, [
-                _vm._v("$ 700")
-              ])
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-4 mb-4" }, [
-          _c("div", { staticClass: "card bg-light text-black shadow" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    RUB\n                    "),
-              _c("div", { staticClass: "text-black-100 float-right" }, [
-                _vm._v("$ 1000")
-              ])
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card shadow mb-4" }, [
-            _c("div", { staticClass: "card-header py-3" }, [
-              _c("h6", { staticClass: "m-0 font-weight-bold text-primary" }, [
-                _vm._v("New deposite")
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "callout callout-info" }, [
-                _c("p", [
-                  _c("i", { staticClass: "fa fa-fw fa-info" }),
-                  _vm._v(
-                    "\n                                The minimum amount is 100 Rub\n                            "
-                  )
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", [_vm._v("Amount")]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { type: "text", name: "nombre", value: "100" }
-                })
-              ]),
-              _vm._v(" "),
-              _c(
-                "a",
-                { staticClass: "btn btn-primary", attrs: { href: "#" } },
-                [_c("span", { staticClass: "text" }, [_vm._v("Pay")])]
-              )
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-4" }, [
-          _c("img", {
-            staticClass: "img-fluid px-3 px-sm-4 mt-3 mb-4",
-            staticStyle: { width: "25rem" },
-            attrs: {
-              src:
-                "https://s3-eu-west-1.amazonaws.com/tpd/screenshotlogo-domain/5817fb050000ff000596da8c/198x149.png",
-              alt: ""
-            }
-          })
-        ])
+    return _c(
+      "div",
+      {
+        staticClass: "d-sm-flex align-items-center justify-content-between mb-4"
+      },
+      [_c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [_vm._v("Deposite")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-body" }, [
+      _vm._v("\n                    RUB\n                    "),
+      _c("div", { staticClass: "text-white-100 float-right" }, [
+        _vm._v("$ 100")
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-body" }, [
+      _vm._v("\n                    RUB\n                    "),
+      _c("div", { staticClass: "text-black-100 float-right" }, [
+        _vm._v("$ 200")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-body" }, [
+      _vm._v("\n                    RUB\n                    "),
+      _c("div", { staticClass: "text-black-100 float-right" }, [
+        _vm._v("$ 300")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-body" }, [
+      _vm._v("\n                    RUB\n                    "),
+      _c("div", { staticClass: "text-black-100 float-right" }, [
+        _vm._v("$ 500")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-body" }, [
+      _vm._v("\n                    RUB\n                    "),
+      _c("div", { staticClass: "text-black-100 float-right" }, [
+        _vm._v("$ 700")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header py-3" }, [
+      _c("h6", { staticClass: "m-0 font-weight-bold text-primary" }, [
+        _vm._v("New deposite")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "callout callout-info" }, [
+      _c("p", [
+        _c("i", { staticClass: "fa fa-fw fa-info" }),
+        _vm._v(
+          "\n                                The minimum amount is 100 Rub\n                            "
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-4" }, [
+      _c("img", {
+        staticClass: "img-fluid px-3 px-sm-4 mt-3 mb-4",
+        staticStyle: { width: "25rem" },
+        attrs: {
+          src:
+            "https://s3-eu-west-1.amazonaws.com/tpd/screenshotlogo-domain/5817fb050000ff000596da8c/198x149.png",
+          alt: ""
+        }
+      })
     ])
   }
 ]
