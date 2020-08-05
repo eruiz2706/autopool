@@ -14,13 +14,10 @@ class CreateTicketTable extends Migration
     public function up()
     {
         Schema::create('tickets', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
             $table->id();
             $table->string('titulo');
-            $table->integer('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('estado_id')->unsigned()->index();
-            $table->foreign('estado_id')->references('id')->on('estados');
+            $table->integer('user_id')->index();
+            $table->integer('estado_id')->index();
             $table->timestamps();
         });
     }
