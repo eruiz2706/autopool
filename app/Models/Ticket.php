@@ -11,10 +11,10 @@ class Ticket extends Model
     protected $fillable = [
         'titulo',
         'user_id',
-        'estado_id'
+        'estado_id',
     ];
 
-    protected $hidden = ['created_at'];
+    protected $hidden = ['created_at','updated_at'];
 
     public function estado(){
         return $this->belongsTo(Estados::class,'estado_id');

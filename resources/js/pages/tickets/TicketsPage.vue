@@ -35,7 +35,9 @@
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tickets List</h1>
-        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" @click.prevent="openModalTicket()"><i class="fas fa-list fa-sm text-white-50"></i> New Ticket</button>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" @click.prevent="openModalTicket()" v-if="getRol !== 'admin'">
+            <i class="fas fa-list fa-sm text-white-50"></i> New Ticket
+        </button>
     </div>
 
     <div class="row">
@@ -44,7 +46,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                    <div class="h1 mb-0 font-weight-bold text-primary text-center text-uppercase">3</div>
+                    <div class="h1 mb-0 font-weight-bold text-primary text-center text-uppercase">{{ tickets_totales }}</div>
                     <div class="text-xs font-weight-bold text-gray-800 text-center text-uppercase">Total</div>
                 </div>
                 </div>
@@ -57,7 +59,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                    <div class="h1 mb-0 font-weight-bold text-info text-center text-uppercase">0</div>
+                    <div class="h1 mb-0 font-weight-bold text-info text-center text-uppercase">{{ tickets_pendientes }}</div>
                     <div class="text-xs font-weight-bold text-gray-800 text-center text-uppercase">Pending</div>
                 </div>
                 </div>
@@ -70,7 +72,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                    <div class="h1 mb-0 font-weight-bold text-warning text-center text-uppercase">1</div>
+                    <div class="h1 mb-0 font-weight-bold text-warning text-center text-uppercase">{{ tickets_progreso }}</div>
                     <div class="text-xs font-weight-bold text-gray-800 text-center text-uppercase">In progress</div>
                 </div>
                 </div>
@@ -83,7 +85,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                    <div class="h1 mb-0 font-weight-bold text-danger text-center text-uppercase">1</div>
+                    <div class="h1 mb-0 font-weight-bold text-danger text-center text-uppercase">{{ tickets_cerrado}}</div>
                     <div class="text-xs font-weight-bold text-gray-800 text-center text-uppercase">Closed</div>
                 </div>
                 </div>
@@ -110,6 +112,7 @@
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Subject</th>
+                                                <th>Created by</th>
                                                 <th>Status</th>
                                                 <th>Registration date</th>
                                             </tr>
@@ -120,22 +123,24 @@
                                                 <td>
                                                     <a href="#" @click.prevent="detalleTicket(item.id)">{{ item.titulo }}</a>
                                                 </td>
+                                                <td>{{ item.username }}</td>
                                                 <td>
                                                     <span v-bind:class="'badge badge-'+item.color">{{ item.descripcion }}</span>
                                                 </td>
-                                                <td>{{ item.created_at }}</td>
+                                                <td>{{ item.fecha_creacion }}</td>
                                             </tr>
                                         </tbody>
-                                        <tfoot v-if="paginas>0">
+                                        <tfoot v-if="paginas>1">
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Subject</th>
+                                                <th>Created by</th>
                                                 <th>Status</th>
                                                 <th>Registration date</th>
                                             </tr>
                                         </tfoot>
                                     </table>
-                                    <div class="d-flex align-items-center justify-content-end" v-if="paginas>0">
+                                    <div class="d-flex align-items-center justify-content-end" v-if="paginas>1">
                                         <paginate
                                         :page-count="paginas"
                                             :prev-text="'Prev'"
@@ -174,10 +179,16 @@ export default {
             loadingPage: false,
             data: [],
             paginas: 0,
+            tickets_totales: 0,
+            tickets_pendientes: 0,
+            tickets_progreso: 0,
+            tickets_cerrado: 0,
+            rol: ''
         }
     },
     mounted() {
         this.getListado();
+        this.getIndicadores();
     },
     methods:{
         clickPage: function(pageNum) {
@@ -208,6 +219,7 @@ export default {
                 this.subject_ticket='';
                 this.description_ticket='';
                 this.getListado();
+                this.getIndicadores();
                 $('#modalticket').modal('hide');
                 console.log(response.data.tickets);
                 this.$swal({
@@ -230,17 +242,34 @@ export default {
             this.req.get('ticket/listado').then( response => {
                 this.loadingPage = false;
                 let tickets = response.data.tickets;
-                this.paginas = tickets.to;
+                this.paginas = tickets.last_page;
                 this.data = tickets.data;
+                this.rol = response.data.rol;
                 console.log(response);
             }).catch( error =>{
                 this.loadingPage = false;
                 console.log(error);
             });
         },
+        getIndicadores(){
+            this.req.get('ticket/indicadores').then( response => {
+                let data = response.data;
+                this.tickets_totales = data.tickets_totales;
+                this.tickets_pendientes = data.tickets_pendientes;
+                this.tickets_progreso = data.tickets_progreso;
+                this.tickets_cerrado = data.tickets_cerrado;
+            }).catch( error =>{
+                console.log(error);
+            });
+        },
         detalleTicket(id){
-            this.$router.push({ path: `/tickets-detalle/${id}` });
+            this.$router.push({ path: `/tickets-details/${id}` });
         }
+    },
+    computed:{
+      getRol(){
+        return this.$store.state.user.rol;
+      },
     }
 }
 </script>
