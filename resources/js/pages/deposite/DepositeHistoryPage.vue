@@ -79,7 +79,7 @@ export default {
     },
     methods:{
         getDepositos(){
-            this.req.get('auth/depositehis').then((response)=>{
+            this.req.get('deposite/history').then((response)=>{
                 this.depositos = response.data.depositos;  
             }, (response)=>{
                 console.log(response.data);

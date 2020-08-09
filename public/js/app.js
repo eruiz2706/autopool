@@ -2543,7 +2543,7 @@ __webpack_require__.r(__webpack_exports__);
     getDepositos: function getDepositos() {
       var _this = this;
 
-      this.req.get('auth/depositehis').then(function (response) {
+      this.req.get('deposite/history').then(function (response) {
         _this.depositos = response.data.depositos;
       }, function (response) {
         console.log(response.data);
@@ -2698,7 +2698,7 @@ __webpack_require__.r(__webpack_exports__);
         monto: this.monto
       };
       console.log(data);
-      this.req.post('auth/depositeregister', data).then(function (response) {
+      this.req.post('deposite/register', data).then(function (response) {
         _this.loadingSubmit = false;
 
         _this.$swal({
@@ -25064,7 +25064,7 @@ var render = function() {
                           menu.icono +
                           " fa-sm fa-fw mr-2 text-gray-400"
                       }),
-                      _vm._v("\n        " + _vm._s(menu.titulo) + "\n    ")
+                      _vm._v("\r\n        " + _vm._s(menu.titulo) + "\r\n    ")
                     ]
                   )
                 ]
@@ -25080,7 +25080,7 @@ var render = function() {
                     staticClass:
                       "fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
                   }),
-                  _vm._v("\n        Logout\n    ")
+                  _vm._v("\r\n        Logout\r\n    ")
                 ]
               )
             ],
@@ -25141,7 +25141,7 @@ var staticRenderFns = [
         },
         [
           _c("h6", { staticClass: "dropdown-header" }, [
-            _vm._v("\n        Alerts Center\n    ")
+            _vm._v("\r\n        Alerts Center\r\n    ")
           ]),
           _vm._v(" "),
           _c(
@@ -25187,7 +25187,7 @@ var staticRenderFns = [
                   _vm._v("December 7, 2019")
                 ]),
                 _vm._v(
-                  "\n        $290.29 has been deposited into your account!\n        "
+                  "\r\n        $290.29 has been deposited into your account!\r\n        "
                 )
               ])
             ]
@@ -25213,7 +25213,7 @@ var staticRenderFns = [
                   _vm._v("December 2, 2019")
                 ]),
                 _vm._v(
-                  "\n        Spending Alert: We've noticed unusually high spending for your account.\n        "
+                  "\r\n        Spending Alert: We've noticed unusually high spending for your account.\r\n        "
                 )
               ])
             ]
@@ -26058,7 +26058,12 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { id: "amount", type: "text", value: "100" },
+                    attrs: {
+                      id: "amount",
+                      type: "text",
+                      value: "100",
+                      readonly: ""
+                    },
                     domProps: { value: _vm.monto },
                     on: {
                       input: function($event) {
@@ -26106,56 +26111,76 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _vm._v("\n                    RUB\n                    "),
-      _c("div", { staticClass: "text-white-100 float-right" }, [
-        _vm._v("$ 100")
-      ])
-    ])
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
+      [
+        _vm._v("\r\n                    RUB\r\n                    "),
+        _c("div", { staticClass: "text-white-100 float-right" }, [
+          _vm._v("$ 100")
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _vm._v("\n                    RUB\n                    "),
-      _c("div", { staticClass: "text-black-100 float-right" }, [
-        _vm._v("$ 200")
-      ])
-    ])
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
+      [
+        _vm._v("\r\n                    RUB\r\n                    "),
+        _c("div", { staticClass: "text-black-100 float-right" }, [
+          _vm._v("$ 200")
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _vm._v("\n                    RUB\n                    "),
-      _c("div", { staticClass: "text-black-100 float-right" }, [
-        _vm._v("$ 300")
-      ])
-    ])
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
+      [
+        _vm._v("\r\n                    RUB\r\n                    "),
+        _c("div", { staticClass: "text-black-100 float-right" }, [
+          _vm._v("$ 300")
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _vm._v("\n                    RUB\n                    "),
-      _c("div", { staticClass: "text-black-100 float-right" }, [
-        _vm._v("$ 500")
-      ])
-    ])
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
+      [
+        _vm._v("\r\n                    RUB\r\n                    "),
+        _c("div", { staticClass: "text-black-100 float-right" }, [
+          _vm._v("$ 500")
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _vm._v("\n                    RUB\n                    "),
-      _c("div", { staticClass: "text-black-100 float-right" }, [
-        _vm._v("$ 700")
-      ])
-    ])
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
+      [
+        _vm._v("\r\n                    RUB\r\n                    "),
+        _c("div", { staticClass: "text-black-100 float-right" }, [
+          _vm._v("$ 700")
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this
@@ -26175,7 +26200,7 @@ var staticRenderFns = [
       _c("p", [
         _c("i", { staticClass: "fa fa-fw fa-info" }),
         _vm._v(
-          "\n                                The minimum amount is 100 Rub\n                            "
+          "\r\n                                The minimum amount is 100 Rub\r\n                            "
         )
       ])
     ])
@@ -27094,7 +27119,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header pt-4" }, [
       _c("h6", { staticClass: "font-weight-bold text-primary" }, [
-        _vm._v("\n                      Referral List\n                    ")
+        _vm._v(
+          "\r\n                      Referral List\r\n                    "
+        )
       ])
     ])
   },
@@ -27326,7 +27353,7 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n                  Register Account\n                "
+                        "\r\n                  Register Account\r\n                "
                       )
                     ]
                   )
@@ -27453,13 +27480,15 @@ var staticRenderFns = [
         _c("div", { staticClass: "col-md-12" }, [
           _c("div", { staticClass: "card mb-4" }, [
             _c("div", { staticClass: "card-header" }, [
-              _vm._v("\n                  Eduardo Ruiz\n                  "),
+              _vm._v(
+                "\r\n                  Eduardo Ruiz\r\n                  "
+              ),
               _c("span", { staticClass: "float-right" }, [_vm._v("12:50 pm")])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
               _vm._v(
-                "\n                  Se solicita la creacion de un nuevo movimiento\n                "
+                "\r\n                  Se solicita la creacion de un nuevo movimiento\r\n                "
               )
             ])
           ])
@@ -27468,13 +27497,15 @@ var staticRenderFns = [
         _c("div", { staticClass: "col-md-12" }, [
           _c("div", { staticClass: "card mb-4" }, [
             _c("div", { staticClass: "card-header" }, [
-              _vm._v("\n                  Eduardo Ruiz\n                  "),
+              _vm._v(
+                "\r\n                  Eduardo Ruiz\r\n                  "
+              ),
               _c("span", { staticClass: "float-right" }, [_vm._v("12:50 pm")])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
               _vm._v(
-                "\n                  Se solicita la creacion de un nuevo movimiento\n                "
+                "\r\n                  Se solicita la creacion de un nuevo movimiento\r\n                "
               )
             ])
           ])
@@ -28387,7 +28418,7 @@ var staticRenderFns = [
                 _c("p", [
                   _c("i", { staticClass: "fa fa-fw fa-info" }),
                   _vm._v(
-                    "\n                                Withdrawal minimum 100 Rub and maximum 1000 Rub\n                            "
+                    "\r\n                                Withdrawal minimum 100 Rub and maximum 1000 Rub\r\n                            "
                   )
                 ])
               ]),
@@ -46519,8 +46550,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Volumes/Datos/programacion/proyectos/autopool/autopool/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Volumes/Datos/programacion/proyectos/autopool/autopool/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\autopool-rub\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\autopool-rub\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -24,6 +24,7 @@ Route::prefix('auth')->group(function(){
     Route::post('register','UsuarioController@register');
     Route::post('update','UsuarioController@update');
     Route::post('imagen','UsuarioController@imagen');
+    
 });
 
 Route::prefix('referidos')->group(function(){
@@ -35,5 +36,9 @@ Route::prefix('ticket')->group(function(){
     Route::get('listado','TicketController@listado');
 });
 
-Route::post('depositeregister','DepositoController@register');
-Route::get('depositehis', 'DepositoController@init'); 
+
+Route::prefix('deposite')->group(function(){
+    Route::post('register','DepositoController@register');
+    Route::get('history', 'DepositoController@init'); 
+});
+

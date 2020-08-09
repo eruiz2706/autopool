@@ -8,7 +8,7 @@
         <div class="row" id="rubs">
             <div class="col-md-4 mb-4">
                 <div id="100" class="card bg-light text-black shadow"  v-on:click="select($event)">
-                <div class="card-body">
+                <div class="card-body" style="cursor:pointer">
                     RUB
                     <div class="text-white-100 float-right">$ 100</div>
                 </div>
@@ -16,7 +16,7 @@
             </div>
             <div class="col-md-4 mb-4">
                 <div id="200" class="card bg-light text-black shadow"  v-on:click="select($event)">
-                <div class="card-body">
+                <div class="card-body" style="cursor:pointer">
                     RUB
                     <div class="text-black-100 float-right">$ 200</div>
                 </div>
@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-4 mb-4" >
                 <div id="300" class="card bg-light text-black shadow" v-on:click="select($event)">
-                <div class="card-body">
+                <div class="card-body" style="cursor:pointer">
                     RUB
                     <div class="text-black-100 float-right">$ 300</div>
                 </div>
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-4 mb-4">
                 <div id="500" class="card bg-light text-black shadow" v-on:click="select($event)">
-                <div class="card-body">
+                <div class="card-body" style="cursor:pointer">
                     RUB
                     <div class="text-black-100 float-right">$ 500</div>
                 </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="col-md-4 mb-4">
                 <div id="700" class="card bg-light text-black shadow" v-on:click="select($event)">
-                <div class="card-body">
+                <div class="card-body" style="cursor:pointer">
                     RUB
                     <div class="text-black-100 float-right">$ 700</div>
                 </div>
@@ -72,7 +72,7 @@
                         </div>
                         <div class="form-group">
                             <label>Amount</label>
-                            <input id="amount" type="text" class="form-control" value="100" v-model="monto"> 
+                            <input id="amount" type="text" class="form-control" value="100" v-model="monto" readonly> 
                         </div> 
 
                         <button class="btn btn-primary" type="submit" :disabled="loadingSubmit">
@@ -136,7 +136,7 @@ export default {
               monto: this.monto
             }
             console.log(data);
-            this.req.post('auth/depositeregister',data).then( response =>{
+            this.req.post('deposite/register',data).then( response =>{
                 this.loadingSubmit = false; 
                 this.$swal({
                   title: '',
