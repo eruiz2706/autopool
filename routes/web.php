@@ -32,7 +32,11 @@ Route::prefix('referidos')->group(function(){
 
 Route::prefix('ticket')->group(function(){
     Route::post('crear','TicketController@crear');
+    Route::post('actualizar','TicketController@actualizar');
+    Route::post('cerrar','TicketController@cerrar');
     Route::get('listado','TicketController@listado');
+    Route::get('indicadores','TicketController@indicadores');
+    Route::get('edit/{id}','TicketController@editar');
 });
 
 Route::post('depositeregister','DepositoController@register');

@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Estados;
+use App\Models\EstadosTicket;
 
-class EstadosSeeder extends Seeder
+class EstadosTicketSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,23 +12,20 @@ class EstadosSeeder extends Seeder
      */
     public function run()
     {
-        Estados::create([
-            'tipo' => 'ticket',
+        EstadosTicket::create([
             'codigo' => 'PE',
             'descripcion' => 'pending',
             'color' => 'info'
         ]);
 
-        Estados::create([
-            'tipo' => 'ticket',
+        EstadosTicket::create([
             'codigo' => 'PR',
             'descripcion' => 'in progress',
             'color' => 'warning'
         ]);
 
-        Estados::create([
-            'tipo' => 'ticket',
-            'codigo' => 'PR',
+        EstadosTicket::create([
+            'codigo' => 'CL',
             'descripcion' => 'closed',
             'color' => 'danger'
         ]);

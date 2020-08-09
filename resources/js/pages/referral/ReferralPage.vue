@@ -31,10 +31,10 @@
                                 <tr v-for="item in data">
                                     <td>{{ item.username }}</td>
                                     <td>{{ item.email }}</td>
-                                    <td>{{ item.created_at }}</td>
+                                    <td>{{ item.fecha_creacion }}</td>
                                 </tr>
                             </tbody>
-                            <tfoot v-if="paginas>0">
+                            <tfoot v-if="paginas>1">
                                 <tr>
                                     <th>Username</th>
                                     <th>Email</th>
@@ -43,7 +43,7 @@
                             </tfoot>
                         </table>
 
-                        <div class="d-flex align-items-center justify-content-end" v-if="paginas>0">
+                        <div class="d-flex align-items-center justify-content-end" v-if="paginas>1">
                             <paginate
                             :page-count="paginas"
                                 :prev-text="'Prev'"
@@ -101,7 +101,7 @@ export default {
             this.req.get('referidos/listado').then( response => {
                 this.loadingPage = false;
                 let referidos = response.data.referidos;
-                this.paginas = referidos.to;
+                this.paginas = referidos.last_page;
                 this.data = referidos.data;
                 console.log(referidos);
             }).catch( error =>{

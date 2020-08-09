@@ -14,5 +14,5 @@ class TicketDetalle extends Model
         'descripcion' 
     ];
 
-    protected $hidden = ['created_at'];
+    protected $hidden = ['created_at','updated_at'];
 }

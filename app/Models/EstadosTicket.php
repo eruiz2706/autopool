@@ -4,15 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Estados extends Model
+class EstadosTicket extends Model
 {
-    protected $table="estados";
+    protected $table="estados_ticket";
 
     protected $fillable = [
-        'tipo',
         'codigo',
         'descripcion'
     ];
 
-    protected $hidden = ['created_at'];
+    protected $hidden = ['created_at','updated_at'];
 }

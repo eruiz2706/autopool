@@ -12,7 +12,9 @@ class ReferidosController extends Controller
 {
     public function listado(Request $request){
 
-        $referidos = User::where("referido_id",Auth::user()->id)->paginate(1);
+        $referidos = User::where("referido_id",Auth::user()->id)
+        ->orderBy('fecha_creacion', 'DESC')
+        ->paginate(10);
 
         return response()->json([
             "referidos" => $referidos,

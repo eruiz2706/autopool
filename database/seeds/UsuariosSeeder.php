@@ -13,7 +13,7 @@ class UsuariosSeeder extends Seeder
      */
     public function run()
     {
-        $payeer = '0';
+        $payeer = '123456';
         User::create([
             'username' => 'Administrador',
             'payeer' => $payeer,

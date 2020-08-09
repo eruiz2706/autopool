@@ -18,6 +18,7 @@ class CreateTicketDetalleTable extends Migration
             $table->integer('ticket_id')->unsigned()->index();
             $table->integer('user_id')->index();
             $table->text('descripcion');
+            $table->dateTime('fecha_creacion')->useCurrent = true;
             $table->timestamps();
         });
     }

@@ -90,7 +90,7 @@ export default [
                 name:'tickets'
             },
             { 
-                path: '/tickets-detalle/:id', 
+                path: '/tickets-details/:id', 
                 component: TicketsDetalle,
                 name:'tickets-detalle'
             },

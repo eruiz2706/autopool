@@ -18,6 +18,7 @@ class CreateTicketTable extends Migration
             $table->string('titulo');
             $table->integer('user_id')->index();
             $table->integer('estado_id')->index();
+            $table->dateTime('fecha_creacion')->useCurrent = true;
             $table->timestamps();
         });
     }

@@ -3323,7 +3323,7 @@ __webpack_require__.r(__webpack_exports__);
       this.req.get('referidos/listado').then(function (response) {
         _this2.loadingPage = false;
         var referidos = response.data.referidos;
-        _this2.paginas = referidos.to;
+        _this2.paginas = referidos.last_page;
         _this2.data = referidos.data;
         console.log(referidos);
       })["catch"](function (error) {
@@ -3512,21 +3512,99 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       req: axios.create({
         baseUrl: BASE_URL
-      })
+      }),
+      id: '',
+      ticket: {},
+      detalles: [],
+      loadingPage: false,
+      loadingSubmit: false,
+      descripcion: '',
+      loadingClose: false
     };
   },
-  mounted: function mounted() {},
-  methods: {}
+  mounted: function mounted() {
+    this.getTicket();
+  },
+  methods: {
+    goBack: function goBack() {
+      this.$router.push('/tickets');
+    },
+    getTicket: function getTicket() {
+      var _this = this;
+
+      this.loadingPage = true;
+      this.id = this.$route.params.id;
+      this.req.get("ticket/edit/".concat(this.id)).then(function (response) {
+        _this.loadingPage = false;
+        _this.ticket = response.data.ticket;
+        _this.detalles = response.data.detalles;
+      })["catch"](function (error) {
+        _this.loadingPage = false; //console.log(error);
+      });
+    },
+    actualizaTicket: function actualizaTicket() {
+      var _this2 = this;
+
+      var data = {
+        descripcion: this.descripcion,
+        id: this.id,
+        estado: this.ticket.estado
+      };
+      this.loadingSubmit = true;
+      this.req.post('ticket/actualizar', data).then(function (response) {
+        _this2.loadingSubmit = false;
+        _this2.descripcion = '';
+
+        _this2.getTicket();
+
+        _this2.$swal({
+          title: '',
+          text: response.data.message,
+          icon: 'success'
+        });
+      })["catch"](function (error) {
+        _this2.loadingSubmit = false;
+
+        _this2.$swal({
+          title: '',
+          text: error.response.data.message,
+          icon: 'warning'
+        });
+      });
+    },
+    cerrarTicket: function cerrarTicket() {
+      var _this3 = this;
+
+      var data = {
+        id: this.id
+      };
+      this.loadingClose = true;
+      this.req.post('ticket/cerrar', data).then(function (response) {
+        _this3.loadingClose = false;
+
+        _this3.$router.push('/tickets');
+
+        _this3.$swal({
+          title: '',
+          text: response.data.message,
+          icon: 'success'
+        });
+      })["catch"](function (error) {
+        _this3.loadingClose = false;
+
+        _this3.$swal({
+          title: '',
+          text: error.response.data.message,
+          icon: 'warning'
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3703,6 +3781,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3714,11 +3797,17 @@ __webpack_require__.r(__webpack_exports__);
       loadingSubmit: false,
       loadingPage: false,
       data: [],
-      paginas: 0
+      paginas: 0,
+      tickets_totales: 0,
+      tickets_pendientes: 0,
+      tickets_progreso: 0,
+      tickets_cerrado: 0,
+      rol: ''
     };
   },
   mounted: function mounted() {
     this.getListado();
+    this.getIndicadores();
   },
   methods: {
     clickPage: function clickPage(pageNum) {
@@ -3755,6 +3844,8 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.getListado();
 
+        _this2.getIndicadores();
+
         $('#modalticket').modal('hide');
         console.log(response.data.tickets);
 
@@ -3781,18 +3872,37 @@ __webpack_require__.r(__webpack_exports__);
       this.req.get('ticket/listado').then(function (response) {
         _this3.loadingPage = false;
         var tickets = response.data.tickets;
-        _this3.paginas = tickets.to;
+        _this3.paginas = tickets.last_page;
         _this3.data = tickets.data;
+        _this3.rol = response.data.rol;
         console.log(response);
       })["catch"](function (error) {
         _this3.loadingPage = false;
         console.log(error);
       });
     },
+    getIndicadores: function getIndicadores() {
+      var _this4 = this;
+
+      this.req.get('ticket/indicadores').then(function (response) {
+        var data = response.data;
+        _this4.tickets_totales = data.tickets_totales;
+        _this4.tickets_pendientes = data.tickets_pendientes;
+        _this4.tickets_progreso = data.tickets_progreso;
+        _this4.tickets_cerrado = data.tickets_cerrado;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     detalleTicket: function detalleTicket(id) {
       this.$router.push({
-        path: "/tickets-detalle/".concat(id)
+        path: "/tickets-details/".concat(id)
       });
+    }
+  },
+  computed: {
+    getRol: function getRol() {
+      return this.$store.state.user.rol;
     }
   }
 });
@@ -27025,17 +27135,17 @@ var render = function() {
                         _vm._v(" "),
                         _c("td", [_vm._v(_vm._s(item.email))]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.created_at))])
+                        _c("td", [_vm._v(_vm._s(item.fecha_creacion))])
                       ])
                     }),
                     0
                   ),
                   _vm._v(" "),
-                  _vm.paginas > 0 ? _c("tfoot", [_vm._m(4)]) : _vm._e()
+                  _vm.paginas > 1 ? _c("tfoot", [_vm._m(4)]) : _vm._e()
                 ]
               ),
               _vm._v(" "),
-              _vm.paginas > 0
+              _vm.paginas > 1
                 ? _c(
                     "div",
                     {
@@ -27387,100 +27497,162 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container-fluid" }, [
+    _c(
+      "div",
+      {
+        staticClass: "d-sm-flex align-items-center justify-content-between mb-4"
+      },
+      [
+        _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
+          _vm._v(_vm._s(_vm.ticket.titulo))
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "d-none d-sm-inline-block btn btn-sm  btn-light",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.goBack()
+              }
+            }
+          },
+          [
+            _c("i", { staticClass: "fa fa-arrow-left fa-sm text-200" }),
+            _vm._v(" Go back")
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _vm.ticket.estado !== "CL"
+      ? _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Comments")]),
+              _vm._v(" "),
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.descripcion,
+                    expression: "descripcion"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { rows: "3", placeholder: "" },
+                domProps: { value: _vm.descripcion },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.descripcion = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-12 mb-4" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary btn-sm",
+                attrs: { type: "submit", disabled: _vm.loadingSubmit },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.actualizaTicket()
+                  }
+                }
+              },
+              [_vm._v("Update ticket")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-info btn-sm",
+                attrs: { type: "submit", disabled: _vm.loadingClose },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.cerrarTicket()
+                  }
+                }
+              },
+              [_vm._v("Close ticket")]
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _vm._m(0),
+    _vm._v(" "),
+    _vm.loadingPage
+      ? _c("div", { staticClass: "d-flex justify-content-center" }, [_vm._m(1)])
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      _vm._l(_vm.detalles, function(item) {
+        return _c("div", { staticClass: "col-md-12" }, [
+          _c("div", { staticClass: "card mb-4" }, [
+            _c("div", { staticClass: "card-header text-primary" }, [
+              _vm._v(
+                "\n                " +
+                  _vm._s(item.username) +
+                  "\n                "
+              ),
+              _c("span", { staticClass: "float-right" }, [
+                _vm._v(_vm._s(item.fecha_creacion))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [
+              _c("p", { staticStyle: { "white-space": "pre-line" } }, [
+                _vm._v(_vm._s(item.descripcion))
+              ])
+            ])
+          ])
+        ])
+      }),
+      0
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-sm-flex align-items-center justify-content-between mb-4"
-        },
-        [
-          _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
-            _vm._v("Prueba ticket")
-          ]),
-          _vm._v(" "),
-          _c("a", { attrs: { href: "" } }, [
-            _c("i", { staticClass: "fa fa-arrow-left text-100" })
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("div", { staticClass: "form-group" }, [
-            _c("label", [_vm._v("Description")]),
-            _vm._v(" "),
-            _c("textarea", {
-              staticClass: "form-control",
-              attrs: { rows: "3" }
-            })
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-12 mb-4" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary float-right",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Update")]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-sm-flex align-items-center justify-content-between mb-4"
-        },
-        [
-          _c("h1", { staticClass: "h5 mb-0 text-gray-800" }, [
-            _vm._v("Comments")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("div", { staticClass: "card mb-4" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("\n                  Eduardo Ruiz\n                  "),
-              _c("span", { staticClass: "float-right" }, [_vm._v("12:50 pm")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                  Se solicita la creacion de un nuevo movimiento\n                "
-              )
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("div", { staticClass: "card mb-4" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("\n                  Eduardo Ruiz\n                  "),
-              _c("span", { staticClass: "float-right" }, [_vm._v("12:50 pm")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                  Se solicita la creacion de un nuevo movimiento\n                "
-              )
-            ])
-          ])
-        ])
-      ])
-    ])
+    return _c(
+      "div",
+      {
+        staticClass: "d-sm-flex align-items-center justify-content-between mb-4"
+      },
+      [_c("h1", { staticClass: "h5 mb-0 text-gray-800" }, [_vm._v("Comments")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "spinner-border text-primary mt-4 mb-4",
+        attrs: { role: "status" }
+      },
+      [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
+    )
   }
 ]
 render._withStripped = true
@@ -27622,37 +27794,151 @@ var render = function() {
           _vm._v("Tickets List")
         ]),
         _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass:
-              "d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm",
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.openModalTicket()
-              }
-            }
-          },
-          [
-            _c("i", { staticClass: "fas fa-list fa-sm text-white-50" }),
-            _vm._v(" New Ticket")
-          ]
-        )
+        _vm.getRol !== "admin"
+          ? _c(
+              "button",
+              {
+                staticClass:
+                  "d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm",
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.openModalTicket()
+                  }
+                }
+              },
+              [
+                _c("i", { staticClass: "fas fa-list fa-sm text-white-50" }),
+                _vm._v(" New Ticket\n        ")
+              ]
+            )
+          : _vm._e()
       ]
     ),
     _vm._v(" "),
-    _vm._m(1),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
+        _c("div", { staticClass: "card  shadow h-100 " }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row no-gutters align-items-center" }, [
+              _c("div", { staticClass: "col mr-2" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "h1 mb-0 font-weight-bold text-primary text-center text-uppercase"
+                  },
+                  [_vm._v(_vm._s(_vm.tickets_totales))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
+                  },
+                  [_vm._v("Total")]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
+        _c("div", { staticClass: "card  shadow h-100 " }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row no-gutters align-items-center" }, [
+              _c("div", { staticClass: "col mr-2" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "h1 mb-0 font-weight-bold text-info text-center text-uppercase"
+                  },
+                  [_vm._v(_vm._s(_vm.tickets_pendientes))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
+                  },
+                  [_vm._v("Pending")]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
+        _c("div", { staticClass: "card  shadow h-100 " }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row no-gutters align-items-center" }, [
+              _c("div", { staticClass: "col mr-2" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "h1 mb-0 font-weight-bold text-warning text-center text-uppercase"
+                  },
+                  [_vm._v(_vm._s(_vm.tickets_progreso))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
+                  },
+                  [_vm._v("In progress")]
+                )
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
+        _c("div", { staticClass: "card  shadow h-100 " }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row no-gutters align-items-center" }, [
+              _c("div", { staticClass: "col mr-2" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "h1 mb-0 font-weight-bold text-danger text-center text-uppercase"
+                  },
+                  [_vm._v(_vm._s(_vm.tickets_cerrado))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
+                  },
+                  [_vm._v("Closed")]
+                )
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card shadow " }, [
-          _vm._m(2),
+          _vm._m(1),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _vm.loadingPage
               ? _c("div", { staticClass: "d-flex justify-content-center" }, [
-                  _vm._m(3)
+                  _vm._m(2)
                 ])
               : _vm._e(),
             _vm._v(" "),
@@ -27664,7 +27950,7 @@ var render = function() {
                   attrs: { id: "zero_config" }
                 },
                 [
-                  _vm._m(4),
+                  _vm._m(3),
                   _vm._v(" "),
                   _c(
                     "tbody",
@@ -27688,23 +27974,25 @@ var render = function() {
                           )
                         ]),
                         _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.username))]),
+                        _vm._v(" "),
                         _c("td", [
                           _c("span", { class: "badge badge-" + item.color }, [
                             _vm._v(_vm._s(item.descripcion))
                           ])
                         ]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.created_at))])
+                        _c("td", [_vm._v(_vm._s(item.fecha_creacion))])
                       ])
                     }),
                     0
                   ),
                   _vm._v(" "),
-                  _vm.paginas > 0 ? _c("tfoot", [_vm._m(5)]) : _vm._e()
+                  _vm.paginas > 1 ? _c("tfoot", [_vm._m(4)]) : _vm._e()
                 ]
               ),
               _vm._v(" "),
-              _vm.paginas > 0
+              _vm.paginas > 1
                 ? _c(
                     "div",
                     {
@@ -27766,124 +28054,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
-        _c("div", { staticClass: "card  shadow h-100 " }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "row no-gutters align-items-center" }, [
-              _c("div", { staticClass: "col mr-2" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "h1 mb-0 font-weight-bold text-primary text-center text-uppercase"
-                  },
-                  [_vm._v("3")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
-                  },
-                  [_vm._v("Total")]
-                )
-              ])
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
-        _c("div", { staticClass: "card  shadow h-100 " }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "row no-gutters align-items-center" }, [
-              _c("div", { staticClass: "col mr-2" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "h1 mb-0 font-weight-bold text-info text-center text-uppercase"
-                  },
-                  [_vm._v("0")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
-                  },
-                  [_vm._v("Pending")]
-                )
-              ])
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
-        _c("div", { staticClass: "card  shadow h-100 " }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "row no-gutters align-items-center" }, [
-              _c("div", { staticClass: "col mr-2" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "h1 mb-0 font-weight-bold text-warning text-center text-uppercase"
-                  },
-                  [_vm._v("1")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
-                  },
-                  [_vm._v("In progress")]
-                )
-              ])
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-xl-3 col-md-6 mb-4" }, [
-        _c("div", { staticClass: "card  shadow h-100 " }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "row no-gutters align-items-center" }, [
-              _c("div", { staticClass: "col mr-2" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "h1 mb-0 font-weight-bold text-danger text-center text-uppercase"
-                  },
-                  [_vm._v("1")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "text-xs font-weight-bold text-gray-800 text-center text-uppercase"
-                  },
-                  [_vm._v("Closed")]
-                )
-              ])
-            ])
-          ])
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header pt-4" }, [
       _c("h6", { staticClass: "font-weight-bold text-primary" }, [
         _vm._v("Tickets List")
@@ -27913,6 +28083,8 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Subject")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Created by")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Status")]),
         _vm._v(" "),
         _c("th", [_vm._v("Registration date")])
@@ -27927,6 +28099,8 @@ var staticRenderFns = [
       _c("th", [_vm._v("Id")]),
       _vm._v(" "),
       _c("th", [_vm._v("Subject")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Created by")]),
       _vm._v(" "),
       _c("th", [_vm._v("Status")]),
       _vm._v(" "),
@@ -46493,7 +46667,7 @@ __webpack_require__.r(__webpack_exports__);
     component: _pages_tickets_TicketsPage__WEBPACK_IMPORTED_MODULE_13__["default"],
     name: 'tickets'
   }, {
-    path: '/tickets-detalle/:id',
+    path: '/tickets-details/:id',
     component: _pages_tickets_TicketsDetallePage__WEBPACK_IMPORTED_MODULE_14__["default"],
     name: 'tickets-detalle'
   }]
@@ -46519,8 +46693,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Volumes/Datos/programacion/proyectos/autopool/autopool/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Volumes/Datos/programacion/proyectos/autopool/autopool/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Volumes/Datos/proyectos/autopool/autopool/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Volumes/Datos/proyectos/autopool/autopool/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
