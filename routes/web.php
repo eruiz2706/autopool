@@ -42,7 +42,15 @@ Route::prefix('ticket')->group(function(){
 
 
 Route::prefix('deposite')->group(function(){
-    Route::post('register','DepositoController@register');
-    Route::get('history', 'DepositoController@init'); 
+    Route::post('crear','DepositoController@crear');
+    Route::get('historial', 'DepositoController@historial'); 
 });
 
+Route::prefix('pools')->group(function(){
+    Route::get('listado','PoolsController@listado');
+    Route::post('comprar','PoolsController@comprar');
+});
+
+Route::prefix('dashboard')->group(function(){
+    Route::get('indicadores','DashboardController@indicadores');
+});

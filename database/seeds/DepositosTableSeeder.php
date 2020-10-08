@@ -13,7 +13,7 @@ class DepositosTableSeeder extends Seeder
      */
     public function run()
     {
-        Deposito::create([
+        /*Deposito::create([
             'monto' => '1500',
             'idconfirmacion' => '546546asdsd54',
             'id_user' => '1'
@@ -29,7 +29,7 @@ class DepositosTableSeeder extends Seeder
             'monto' => '3500',
             'idconfirmacion' => '748545adree6545',
             'id_user' => '0'
-        ]);
+        ]);*/
     }
 }
  

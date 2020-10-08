@@ -22,6 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('imagen')->nullable();
             $table->string('password');
             $table->string('rol');
+            $table->double('total_billetera')->default(0); // saldo que tiene disponible en la cuenta
+            $table->integer('pool_activa')->default(1); // maneja la pool que va a estar activa
             $table->dateTime('fecha_creacion')->useCurrent = true;
             $table->timestamps();
         });

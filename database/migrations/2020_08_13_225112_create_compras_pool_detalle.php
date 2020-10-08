@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDepositosTable extends Migration
+class CreateComprasPoolDetalle extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateDepositosTable extends Migration
      */
     public function up()
     {
-        Schema::create('depositos', function (Blueprint $table) {
+        Schema::create('compras_pool_detalle', function (Blueprint $table) {
             $table->id();
-            $table->double('monto', 15, 3);
+            $table->integer('compra_id');
             $table->integer('user_id');
-            $table->string('confirmacion_id');
+            $table->double('valor');
+            $table->string('descripcion');
             $table->dateTime('fecha_creacion')->useCurrent = true;
             $table->timestamps();
         });
@@ -30,6 +31,6 @@ class CreateDepositosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('depositos');
+        Schema::dropIfExists('compras_pool_detalle');
     }
 }

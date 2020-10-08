@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 class Deposito extends Model
 {
-    use Notifiable;
+    protected $table="depositos";
 
     /**
      * The attributes that are mass assignable.
@@ -15,6 +15,6 @@ class Deposito extends Model
      * @var array
      */
     protected $fillable = [
-        'monto','idconfirmacion', 'id_user'
+        'monto','confirmacion_id', 'user_id'
     ];
 }

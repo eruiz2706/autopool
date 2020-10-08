@@ -2419,35 +2419,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {},
-  methods: {}
+  data: function data() {
+    return {
+      req: axios.create({
+        baseUrl: BASE_URL
+      }),
+      account_balance: 0,
+      total_deposites: 0,
+      tota_withdraw: 0,
+      total_referrals: 0,
+      total_pools: 0,
+      lottery_win: 0
+    };
+  },
+  mounted: function mounted() {
+    this.getIndicadores();
+  },
+  methods: {
+    getIndicadores: function getIndicadores() {
+      var _this = this;
+
+      this.req.get('dashboard/indicadores').then(function (response) {
+        _this.account_balance = response.data.account_balance;
+        _this.total_deposites = response.data.total_deposites;
+        _this.tota_withdraw = response.data.tota_withdraw;
+        _this.total_referrals = response.data.total_referrals;
+        _this.total_pools = response.data.total_pools;
+        _this.lottery_win = response.data.lottery_win;
+        console.log(response);
+      }, function (response) {
+        console.log(response.data);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -2533,7 +2538,8 @@ __webpack_require__.r(__webpack_exports__);
       req: axios.create({
         baseUrl: BASE_URL
       }),
-      depositos: {}
+      depositos: {},
+      total_deposito: 0
     };
   },
   mounted: function mounted() {
@@ -2543,8 +2549,10 @@ __webpack_require__.r(__webpack_exports__);
     getDepositos: function getDepositos() {
       var _this = this;
 
-      this.req.get('deposite/history').then(function (response) {
+      this.req.get('deposite/historial').then(function (response) {
         _this.depositos = response.data.depositos;
+        _this.total_deposito = response.data.total_deposito;
+        console.log(response);
       }, function (response) {
         console.log(response.data);
       });
@@ -2614,91 +2622,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       req: axios.create({
         baseUrl: BASE_URL
       }),
+      montos: [],
       errors: [],
       loadingSubmit: false,
-      monto: ''
+      monto: 0,
+      selectCard: 0
     };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    this.montos = [100, 200, 300, 500, 700, 1000];
+    this.monto = this.montos[0];
+  },
   methods: {
-    select: function select(event) {
-      var targetId = event.currentTarget.id;
-      var i;
-      var x = document.getElementsByClassName('card bg-primary text-white shadow');
-
-      for (i = 0; i < x.length; i++) {
-        x[i].className = "card bg-light text-black shadow";
-      }
-
-      document.getElementById(targetId).className = "card bg-primary text-white shadow";
-
-      if (targetId != "CUST") {
-        document.getElementById('amount').value = targetId;
-      }
+    focusMonto: function focusMonto() {
+      this.selectCard = -1;
     },
-    sendValue: function sendValue(event) {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        document.getElementById('amount').value = document.getElementById('custom').value;
-      }
+    clickCard: function clickCard(monto, index) {
+      this.monto = monto;
+      this.selectCard = index;
     },
     onSubmit: function onSubmit() {
       var _this = this;
 
-      this.monto = document.getElementById('amount').value;
       this.errors = [];
       this.loadingSubmit = true;
       var data = {
         monto: this.monto
       };
-      console.log(data);
-      this.req.post('deposite/register', data).then(function (response) {
+      this.req.post('deposite/crear', data).then(function (response) {
         _this.loadingSubmit = false;
 
         _this.$swal({
@@ -2707,7 +2664,7 @@ __webpack_require__.r(__webpack_exports__);
           icon: 'success'
         });
 
-        _this.$router.push('/dashboard');
+        _this.$router.push('/deposite-history');
       })["catch"](function (error) {
         _this.loadingSubmit = false;
         if (error.response.data.errors) _this.errors = error.response.data.errors;
@@ -2765,120 +2722,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {},
-  methods: {}
+  data: function data() {
+    return {
+      req: axios.create({
+        baseUrl: BASE_URL
+      }),
+      pools: [],
+      pool_activa: 0
+    };
+  },
+  mounted: function mounted() {
+    this.getListado();
+  },
+  methods: {
+    getListado: function getListado() {
+      var _this = this;
+
+      this.req.get('pools/listado').then(function (response) {
+        _this.pools = response.data.pools;
+        _this.pool_activa = response.data.pool_activa;
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    comprarPool: function comprarPool(id) {
+      var _this2 = this;
+
+      this.req.post('pools/comprar', {
+        id: id
+      }).then(function (response) {
+        //this.pools = response.data.pools;
+        //this.pool_activa = response.data.pool_activa
+        _this2.$swal({
+          title: '',
+          text: response.data.message,
+          icon: 'success'
+        });
+
+        console.log(response);
+      })["catch"](function (error) {
+        _this2.$swal({
+          title: '',
+          text: error.response.data.message,
+          icon: 'warning'
+        });
+
+        console.log(error);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -25174,7 +25068,7 @@ var render = function() {
                           menu.icono +
                           " fa-sm fa-fw mr-2 text-gray-400"
                       }),
-                      _vm._v("\r\n        " + _vm._s(menu.titulo) + "\r\n    ")
+                      _vm._v("\n        " + _vm._s(menu.titulo) + "\n    ")
                     ]
                   )
                 ]
@@ -25190,7 +25084,7 @@ var render = function() {
                     staticClass:
                       "fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
                   }),
-                  _vm._v("\r\n        Logout\r\n    ")
+                  _vm._v("\n        Logout\n    ")
                 ]
               )
             ],
@@ -25251,7 +25145,7 @@ var staticRenderFns = [
         },
         [
           _c("h6", { staticClass: "dropdown-header" }, [
-            _vm._v("\r\n        Alerts Center\r\n    ")
+            _vm._v("\n        Alerts Center\n    ")
           ]),
           _vm._v(" "),
           _c(
@@ -25297,7 +25191,7 @@ var staticRenderFns = [
                   _vm._v("December 7, 2019")
                 ]),
                 _vm._v(
-                  "\r\n        $290.29 has been deposited into your account!\r\n        "
+                  "\n        $290.29 has been deposited into your account!\n        "
                 )
               ])
             ]
@@ -25323,7 +25217,7 @@ var staticRenderFns = [
                   _vm._v("December 2, 2019")
                 ]),
                 _vm._v(
-                  "\r\n        Spending Alert: We've noticed unusually high spending for your account.\r\n        "
+                  "\n        Spending Alert: We've noticed unusually high spending for your account.\n        "
                 )
               ])
             ]
@@ -25449,374 +25343,304 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container-fluid" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          { staticClass: "card border-left-primary shadow h-100 py-2" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row no-gutters align-items-center" }, [
+                _c("div", { staticClass: "col mr-2" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "text-xs font-weight-bold text-primary text-uppercase mb-1"
+                    },
+                    [_vm._v("Account balance")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "h5 mb-0 font-weight-bold text-gray-800" },
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.account_balance) +
+                          "\n                      "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(1)
+              ])
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          { staticClass: "card border-left-success shadow h-100 py-2" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row no-gutters align-items-center" }, [
+                _c("div", { staticClass: "col mr-2" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "text-xs font-weight-bold text-success text-uppercase mb-1"
+                    },
+                    [_vm._v("Total deposits")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "h5 mb-0 font-weight-bold text-gray-800" },
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.total_deposites) +
+                          "\n                      "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(2)
+              ])
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c("div", { staticClass: "card border-left-info shadow h-100 py-2" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row no-gutters align-items-center" }, [
+              _c("div", { staticClass: "col mr-2" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "text-xs font-weight-bold text-info text-uppercase mb-1"
+                  },
+                  [_vm._v("Total withdrawals")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "row no-gutters align-items-center" },
+                  [
+                    _c("div", { staticClass: "col-auto" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "h5 mb-0 mr-3 font-weight-bold text-gray-800"
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(_vm.tota_withdraw) +
+                              "\n                          "
+                          )
+                        ]
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _vm._m(3)
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          { staticClass: "card border-left-warning shadow h-100 py-2" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row no-gutters align-items-center" }, [
+                _c("div", { staticClass: "col mr-2" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "text-xs font-weight-bold text-warning text-uppercase mb-1"
+                    },
+                    [_vm._v("Total Referrals")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "h5 mb-0 font-weight-bold text-gray-800" },
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.total_referrals) +
+                          "\n                      "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(4)
+              ])
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          { staticClass: "card border-left-primary shadow h-100 py-2" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row no-gutters align-items-center" }, [
+                _c("div", { staticClass: "col mr-2" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "text-xs font-weight-bold text-primary text-uppercase mb-1"
+                    },
+                    [_vm._v("Total Investment In Pools")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "h5 mb-0 font-weight-bold text-gray-800" },
+                    [
+                      _vm._v(
+                        "\n                      " +
+                          _vm._s(_vm.total_pools) +
+                          "  \n                    "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(5)
+              ])
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4 mb-4" }, [
+        _c(
+          "div",
+          { staticClass: "card border-left-success shadow h-100 py-2" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row no-gutters align-items-center" }, [
+                _c("div", { staticClass: "col mr-2" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "text-xs font-weight-bold text-success text-uppercase mb-1"
+                    },
+                    [_vm._v("Lottery Win")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "h5 mb-0 font-weight-bold text-gray-800" },
+                    [
+                      _vm._v(
+                        "\n                      " +
+                          _vm._s(_vm.lottery_win) +
+                          "\n                    "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(6)
+              ])
+            ])
+          ]
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-sm-flex align-items-center justify-content-between mb-4"
-        },
-        [
-          _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
-            _vm._v("Dashboard")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-primary shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-primary text-uppercase mb-1"
-                        },
-                        [_vm._v("Deposite Wallet")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-                        },
-                        [_vm._v("$40,000")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-success shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-success text-uppercase mb-1"
-                        },
-                        [_vm._v("Interest Wallet")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-                        },
-                        [_vm._v("$215,000")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-info shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-info text-uppercase mb-1"
-                        },
-                        [_vm._v("Total Investment")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "row no-gutters align-items-center" },
-                        [
-                          _c("div", { staticClass: "col-auto" }, [
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "h5 mb-0 mr-3 font-weight-bold text-gray-800"
-                              },
-                              [_vm._v("$50 000")]
-                            )
-                          ])
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-warning shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-warning text-uppercase mb-1"
-                        },
-                        [_vm._v("Total Withdraw")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-                        },
-                        [_vm._v("$18 000")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-primary shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-primary text-uppercase mb-1"
-                        },
-                        [_vm._v("Total Ticket")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-                        },
-                        [_vm._v("$40,000")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-success shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-success text-uppercase mb-1"
-                        },
-                        [_vm._v("Total Deposite")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-                        },
-                        [_vm._v("$215,000")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-info shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-info text-uppercase mb-1"
-                        },
-                        [_vm._v("Total Transaction")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "row no-gutters align-items-center" },
-                        [
-                          _c("div", { staticClass: "col-auto" }, [
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "h5 mb-0 mr-3 font-weight-bold text-gray-800"
-                              },
-                              [_vm._v("$50 000")]
-                            )
-                          ])
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-6 col-md-6 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-left-warning shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c(
-                  "div",
-                  { staticClass: "row no-gutters align-items-center" },
-                  [
-                    _c("div", { staticClass: "col mr-2" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "text-xs font-weight-bold text-warning text-uppercase mb-1"
-                        },
-                        [_vm._v("Total Referral")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-                        },
-                        [_vm._v("$18 000")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-auto" }, [
-                      _c("i", {
-                        staticClass: "fas fa-dollar-sign fa-2x text-gray-300"
-                      })
-                    ])
-                  ]
-                )
-              ])
-            ]
-          )
+    return _c(
+      "div",
+      {
+        staticClass: "d-sm-flex align-items-center justify-content-between mb-4"
+      },
+      [
+        _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
+          _vm._v("Dashboard")
         ])
-      ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fas fa-ruble-sign fa-2x text-gray-300" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fas fa-ruble-sign fa-2x text-gray-300" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fas fa-ruble-sign fa-2x text-gray-300" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fas fa-ruble-sign fa-2x text-gray-300" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fas fa-ruble-sign fa-2x text-gray-300" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fas fa-ruble-sign fa-2x text-gray-300" })
     ])
   }
 ]
@@ -25850,6 +25674,29 @@ var render = function() {
           _vm._m(1),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "mb-2 float-right" }, [
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "text font-weight-bold text-info text-uppercase mb-1"
+                },
+                [_vm._v("Total deposits")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "h5 mb-0 font-weight-bold text-gray-800 float-right"
+                },
+                [
+                  _c("i", { staticClass: "fa fa-ruble-sign" }),
+                  _vm._v(" " + _vm._s(_vm.total_deposito))
+                ]
+              )
+            ]),
+            _vm._v(" "),
             _c("div", { staticClass: "table-responsive" }, [
               _c(
                 "table",
@@ -25865,11 +25712,9 @@ var render = function() {
                         _vm._v(" "),
                         _c("td", [_vm._v(_vm._s(deposito.monto))]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(deposito.idconfirmacion))]),
+                        _c("td", [_vm._v(_vm._s(deposito.confirmacion_id))]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(deposito.id_user))]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(deposito.created_at))])
+                        _c("td", [_vm._v(_vm._s(deposito.fecha_creacion))])
                       ])
                     }),
                     0
@@ -25926,8 +25771,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Confirmacion")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Payeer")]),
-        _vm._v(" "),
         _c("th", [_vm._v("Fecha")])
       ])
     ])
@@ -25943,8 +25786,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Monto")]),
         _vm._v(" "),
         _c("th", [_vm._v("Confirmacion")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Payeer")]),
         _vm._v(" "),
         _c("th", [_vm._v("Fecha")])
       ])
@@ -26023,137 +25864,70 @@ var render = function() {
   return _c("div", { staticClass: "container-fluid" }, [
     _vm._m(0),
     _vm._v(" "),
-    _c("div", { staticClass: "row", attrs: { id: "rubs" } }, [
-      _c("div", { staticClass: "col-md-4 mb-4" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
         _c(
           "div",
-          {
-            staticClass: "card bg-light text-black shadow",
-            attrs: { id: "100" },
-            on: {
-              click: function($event) {
-                return _vm.select($event)
-              }
-            }
-          },
-          [_vm._m(1)]
+          { staticClass: "row" },
+          _vm._l(_vm.montos, function(monto, index) {
+            return _c("div", { key: monto, staticClass: "col-md-6 mb-4" }, [
+              _c(
+                "div",
+                {
+                  class:
+                    _vm.selectCard === index
+                      ? "card bg-primary text-white shadow"
+                      : "card bg-light text-black shadow",
+                  attrs: { id: "100" },
+                  on: {
+                    click: function($event) {
+                      return _vm.clickCard(monto, index)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "card-body",
+                      staticStyle: { cursor: "pointer" }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        RUB\n                        "
+                      ),
+                      _c("div", { staticClass: "text-white-100 float-right" }, [
+                        _c("i", { staticClass: "fa fa-ruble-sign" }),
+                        _vm._v(" " + _vm._s(monto))
+                      ])
+                    ]
+                  )
+                ]
+              )
+            ])
+          }),
+          0
         )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-4 mb-4" }, [
+      _c("div", { staticClass: "col-md-6" }, [
         _c(
-          "div",
+          "form",
           {
-            staticClass: "card bg-light text-black shadow",
-            attrs: { id: "200" },
+            staticClass: "deposite",
             on: {
-              click: function($event) {
-                return _vm.select($event)
-              }
-            }
-          },
-          [_vm._m(2)]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4 mb-4" }, [
-        _c(
-          "div",
-          {
-            staticClass: "card bg-light text-black shadow",
-            attrs: { id: "300" },
-            on: {
-              click: function($event) {
-                return _vm.select($event)
-              }
-            }
-          },
-          [_vm._m(3)]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4 mb-4" }, [
-        _c(
-          "div",
-          {
-            staticClass: "card bg-light text-black shadow",
-            attrs: { id: "500" },
-            on: {
-              click: function($event) {
-                return _vm.select($event)
-              }
-            }
-          },
-          [_vm._m(4)]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4 mb-4" }, [
-        _c(
-          "div",
-          {
-            staticClass: "card bg-light text-black shadow",
-            attrs: { id: "700" },
-            on: {
-              click: function($event) {
-                return _vm.select($event)
-              }
-            }
-          },
-          [_vm._m(5)]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4 mb-4" }, [
-        _c(
-          "div",
-          {
-            staticClass: "card bg-light text-black shadow",
-            attrs: { id: "CUST" },
-            on: {
-              click: function($event) {
-                return _vm.select($event)
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.onSubmit($event)
               }
             }
           },
           [
-            _c("div", { staticClass: "card-body" }, [
-              _c("label", [_vm._v("CUSTOM")]),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "form-control",
-                attrs: { type: "number", id: "custom", value: "0" },
-                on: {
-                  keyup: function($event) {
-                    return _vm.sendValue($event)
-                  }
-                }
-              })
-            ])
-          ]
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        staticClass: "deposite",
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.onSubmit($event)
-          }
-        }
-      },
-      [
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-8" }, [
             _c("div", { staticClass: "card shadow mb-4" }, [
-              _vm._m(6),
+              _vm._m(1),
               _vm._v(" "),
               _c("div", { staticClass: "card-body" }, [
-                _vm._m(7),
+                _vm._m(2),
                 _vm._v(" "),
                 _c("div", { staticClass: "form-group" }, [
                   _c("label", [_vm._v("Amount")]),
@@ -26168,14 +25942,12 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: {
-                      id: "amount",
-                      type: "text",
-                      value: "100",
-                      readonly: ""
-                    },
+                    attrs: { type: "number" },
                     domProps: { value: _vm.monto },
                     on: {
+                      focus: function($event) {
+                        return _vm.focusMonto()
+                      },
                       input: function($event) {
                         if ($event.target.composing) {
                           return
@@ -26189,19 +25961,21 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-primary btn-block",
                     attrs: { type: "submit", disabled: _vm.loadingSubmit }
                   },
-                  [_c("span", { staticClass: "text" }, [_vm._v("Pay")])]
+                  [
+                    _vm._v(
+                      "\n                        Pay\n                    "
+                    )
+                  ]
                 )
               ])
             ])
-          ]),
-          _vm._v(" "),
-          _vm._m(8)
-        ])
-      ]
-    )
+          ]
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -26221,84 +25995,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
-      [
-        _vm._v("\r\n                    RUB\r\n                    "),
-        _c("div", { staticClass: "text-white-100 float-right" }, [
-          _vm._v("$ 100")
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
-      [
-        _vm._v("\r\n                    RUB\r\n                    "),
-        _c("div", { staticClass: "text-black-100 float-right" }, [
-          _vm._v("$ 200")
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
-      [
-        _vm._v("\r\n                    RUB\r\n                    "),
-        _c("div", { staticClass: "text-black-100 float-right" }, [
-          _vm._v("$ 300")
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
-      [
-        _vm._v("\r\n                    RUB\r\n                    "),
-        _c("div", { staticClass: "text-black-100 float-right" }, [
-          _vm._v("$ 500")
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-body", staticStyle: { cursor: "pointer" } },
-      [
-        _vm._v("\r\n                    RUB\r\n                    "),
-        _c("div", { staticClass: "text-black-100 float-right" }, [
-          _vm._v("$ 700")
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header py-3" }, [
       _c("h6", { staticClass: "m-0 font-weight-bold text-primary" }, [
-        _vm._v("New deposite")
+        _vm._v("\n                    New deposite\n                ")
       ])
     ])
   },
@@ -26310,25 +26009,9 @@ var staticRenderFns = [
       _c("p", [
         _c("i", { staticClass: "fa fa-fw fa-info" }),
         _vm._v(
-          "\r\n                                The minimum amount is 100 Rub\r\n                            "
+          "\n                            The minimum amount is 100 Rub\n                        "
         )
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-4" }, [
-      _c("img", {
-        staticClass: "img-fluid px-3 px-sm-4 mt-3 mb-4",
-        staticStyle: { width: "25rem" },
-        attrs: {
-          src:
-            "https://s3-eu-west-1.amazonaws.com/tpd/screenshotlogo-domain/5817fb050000ff000596da8c/198x149.png",
-          alt: ""
-        }
-      })
     ])
   }
 ]
@@ -26353,304 +26036,99 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container-fluid" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      _vm._l(_vm.pools, function(pool) {
+        return _c("div", { key: pool.id, staticClass: "col-xl-4 mb-4" }, [
+          _c("div", { staticClass: "card  shadow h-90" }, [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "row  align-items-center" }, [
+                _vm._m(1, true),
+                _vm._v(" "),
+                _c("div", { staticClass: "col mr-3" }, [
+                  _c(
+                    "div",
+                    {
+                      class:
+                        "h5 font-weight-bold text-" +
+                        pool.color +
+                        "  text-uppercase mb-1"
+                    },
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(pool.valor) +
+                          " RUB\n                      "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  pool.id === _vm.pool_activa
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-light btn-icon-split",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.comprarPool(pool.id)
+                            }
+                          }
+                        },
+                        [
+                          _vm._m(2, true),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "text" }, [
+                            _vm._v("Invest Now")
+                          ])
+                        ]
+                      )
+                    : _vm._e()
+                ])
+              ])
+            ])
+          ])
+        ])
+      }),
+      0
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container-fluid" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-sm-flex align-items-center justify-content-between mb-4"
-        },
-        [
-          _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
-            _vm._v("Investment Plans")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-xl-4 col-md-4 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-bottom-primary shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "row  align-items-center" }, [
-                  _c("div", { staticClass: "col-auto" }, [
-                    _c("i", {
-                      staticClass: "fas fa-dollar-sign fa-6x text-gray-300"
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col mr-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "h5 font-weight-bold text-primary  text-uppercase mb-1"
-                      },
-                      [_vm._v("10% Starter Combo")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-light btn-icon-split",
-                        attrs: { href: "#" }
-                      },
-                      [
-                        _c("span", { staticClass: "icon text-gray-600" }, [
-                          _c("i", { staticClass: "fas fa-arrow-right" })
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "text" }, [
-                          _vm._v("Invest Now")
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-4 col-md-4 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-bottom-success shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "row  align-items-center" }, [
-                  _c("div", { staticClass: "col-auto" }, [
-                    _c("i", {
-                      staticClass: "fas fa-dollar-sign fa-6x text-gray-300"
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col mr-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "h5 font-weight-bold text-success  text-uppercase mb-1"
-                      },
-                      [_vm._v("15% Nexter Combo")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-light btn-icon-split",
-                        attrs: { href: "#" }
-                      },
-                      [
-                        _c("span", { staticClass: "icon text-gray-600" }, [
-                          _c("i", { staticClass: "fas fa-arrow-right" })
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "text" }, [
-                          _vm._v("Invest Now")
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-4 col-md-4 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-bottom-info shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "row  align-items-center" }, [
-                  _c("div", { staticClass: "col-auto" }, [
-                    _c("i", {
-                      staticClass: "fas fa-dollar-sign fa-6x text-gray-300"
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col mr-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "h5 font-weight-bold text-info  text-uppercase mb-1"
-                      },
-                      [_vm._v("20% Nick Combo")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-light btn-icon-split",
-                        attrs: { href: "#" }
-                      },
-                      [
-                        _c("span", { staticClass: "icon text-gray-600" }, [
-                          _c("i", { staticClass: "fas fa-arrow-right" })
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "text" }, [
-                          _vm._v("Invest Now")
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-4 col-md-4 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-bottom-warning shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "row  align-items-center" }, [
-                  _c("div", { staticClass: "col-auto" }, [
-                    _c("i", {
-                      staticClass: "fas fa-dollar-sign fa-6x text-gray-300"
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col mr-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "h5 font-weight-bold text-warning  text-uppercase mb-1"
-                      },
-                      [_vm._v("25% Lockforce")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-light btn-icon-split",
-                        attrs: { href: "#" }
-                      },
-                      [
-                        _c("span", { staticClass: "icon text-gray-600" }, [
-                          _c("i", { staticClass: "fas fa-arrow-right" })
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "text" }, [
-                          _vm._v("Invest Now")
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-4 col-md-4 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-bottom-primary shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "row  align-items-center" }, [
-                  _c("div", { staticClass: "col-auto" }, [
-                    _c("i", {
-                      staticClass: "fas fa-dollar-sign fa-6x text-gray-300"
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col mr-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "h5 font-weight-bold text-primary  text-uppercase mb-1"
-                      },
-                      [_vm._v("30% Earngim")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-light btn-icon-split",
-                        attrs: { href: "#" }
-                      },
-                      [
-                        _c("span", { staticClass: "icon text-gray-600" }, [
-                          _c("i", { staticClass: "fas fa-arrow-right" })
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "text" }, [
-                          _vm._v("Invest Now")
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-xl-4 col-md-4 mb-4" }, [
-          _c(
-            "div",
-            { staticClass: "card border-bottom-success shadow h-100 py-2" },
-            [
-              _c("div", { staticClass: "card-body" }, [
-                _c("div", { staticClass: "row  align-items-center" }, [
-                  _c("div", { staticClass: "col-auto" }, [
-                    _c("i", {
-                      staticClass: "fas fa-dollar-sign fa-6x text-gray-300"
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col mr-3" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "h5 font-weight-bold text-success  text-uppercase mb-1"
-                      },
-                      [_vm._v("50% Rokhech")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "btn btn-light btn-icon-split",
-                        attrs: { href: "#" }
-                      },
-                      [
-                        _c("span", { staticClass: "icon text-gray-600" }, [
-                          _c("i", { staticClass: "fas fa-arrow-right" })
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "text" }, [
-                          _vm._v("Invest Now")
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ])
-            ]
-          )
+    return _c(
+      "div",
+      {
+        staticClass: "d-sm-flex align-items-center justify-content-between mb-4"
+      },
+      [
+        _c("h1", { staticClass: "h3 mb-0 text-gray-800" }, [
+          _vm._v("Investment Plans")
         ])
-      ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-auto" }, [
+      _c("i", { staticClass: "fa fa-ruble-sign fa-5x text-gray-300" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon text-gray-600" }, [
+      _c("i", { staticClass: "fas fa-arrow-right" })
     ])
   }
 ]
@@ -27229,9 +26707,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header pt-4" }, [
       _c("h6", { staticClass: "font-weight-bold text-primary" }, [
-        _vm._v(
-          "\r\n                      Referral List\r\n                    "
-        )
+        _vm._v("\n                      Referral List\n                    ")
       ])
     ])
   },
@@ -27463,7 +26939,7 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\r\n                  Register Account\r\n                "
+                        "\n                  Register Account\n                "
                       )
                     ]
                   )
@@ -27634,9 +27110,9 @@ var render = function() {
           _c("div", { staticClass: "card mb-4" }, [
             _c("div", { staticClass: "card-header text-primary" }, [
               _vm._v(
-                "\r\n                " +
+                "\n                " +
                   _vm._s(item.username) +
-                  "\r\n                "
+                  "\n                "
               ),
               _c("span", { staticClass: "float-right" }, [
                 _vm._v(_vm._s(item.fecha_creacion))
@@ -27836,7 +27312,7 @@ var render = function() {
               },
               [
                 _c("i", { staticClass: "fas fa-list fa-sm text-white-50" }),
-                _vm._v(" New Ticket\r\n        ")
+                _vm._v(" New Ticket\n        ")
               ]
             )
           : _vm._e()
@@ -28588,7 +28064,7 @@ var staticRenderFns = [
                 _c("p", [
                   _c("i", { staticClass: "fa fa-fw fa-info" }),
                   _vm._v(
-                    "\r\n                                Withdrawal minimum 100 Rub and maximum 1000 Rub\r\n                            "
+                    "\n                                Withdrawal minimum 100 Rub and maximum 1000 Rub\n                            "
                   )
                 ])
               ]),
@@ -46720,8 +46196,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\autopool-rub\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\autopool-rub\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Volumes/Datos/proyectos/autopool/autopool/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Volumes/Datos/proyectos/autopool/autopool/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

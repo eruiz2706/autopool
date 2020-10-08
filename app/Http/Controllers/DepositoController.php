@@ -7,23 +7,27 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 use App\User;
-use App\Deposito;
+use App\Models\Deposito;
+use DB;
 
 class DepositoController extends Controller
 {
-    public function init(){
-        $payeer = Auth::user()->payeer;
-
+    public function historial(){
+        
+        $depositos = Deposito::all()->where('user_id', Auth::user()->id);
+        $total_deposito = Deposito::where('user_id', Auth::user()->id)->sum('monto');
+        $usuario = User::find(Auth::user()->id);
+        
         return response()->json([
-            'depositos' => Deposito::all()->where('id_user',  $payeer)
+            'depositos' => $depositos,
+            'total_deposito' => $total_deposito
         ],200);
     }
 
-    public function register(Request $request){
-        $payeer = Auth::user()->payeer;
-
+    public function crear(Request $request){
+        
         $validator =Validator::make($request->all(),[
-            'monto' =>'required|string',
+            'monto' =>'required',
         ]);
 
         if ($validator->fails()) {
@@ -33,19 +37,26 @@ class DepositoController extends Controller
             ],400);
         }
 
+        DB::beginTransaction();
         try{
-            $usuario = Deposito::create([
+            Deposito::create([
                 'monto' => $request->monto,
-                'idconfirmacion' => "PR1458PR",
-                'id_user' => $payeer
+                'confirmacion_id' => date('YmdHis'),
+                'user_id' => Auth::user()->id
             ]);
 
+            $usuario = User::find(Auth::user()->id);
+            $usuario->total_billetera = $usuario->total_billetera + $request->monto;
+            $usuario->save();
+
+            DB::commit();
             return response()->json([
                 "message" =>  "Deposite registered successfully",
             ],200);
         }catch(\Exception $e){
+            DB::rollback();
             return response()->json([
-                "message" => 'Deposite registration was not possible'.$e,
+                "message" => 'Deposite registration was not possible',
             ],400);
         }
     }

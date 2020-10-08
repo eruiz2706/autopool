@@ -20,7 +20,7 @@ class UsuarioController extends Controller
         if($user !== null){
             if($user->rol === 'admin'){
                 $menu = [
-                    ["titulo" => 'Dashboard','url' => '/dashboard-admin', "icono" => 'fa-tachometer-alt'],
+                    ["titulo" => 'Dashboard','url' => '/dashboard-admin', "icono" => 'fa-tachometer'],
                     ["titulo" => 'Investment Plans','url' => '/deposite', "icono" => 'fa-tachometer-alt']
                 ];
     
@@ -31,18 +31,18 @@ class UsuarioController extends Controller
             }else{
                 $menu = [
                     ["titulo" => 'Dashboard','url' => '/dashboard', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Investment Plans','url' => '/investments', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Deposite Now','url' => '/deposite', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Deposite History','url' => '/deposite-history', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Withdraw','url' => '/withdraw', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Withdraw History','url' => '/withdraw-history', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Transaction History','url' => '/transaction-history', "icono" => 'fa-tachometer-alt'],
-                    ["titulo" => 'Lotery','url' => '/lottery', "icono" => 'fa-tachometer-alt'],
+                    ["titulo" => 'Investment Plans','url' => '/investments', "icono" => 'fa-chart-line'],
+                    ["titulo" => 'Deposite Now','url' => '/deposite', "icono" => 'fa-university'],
+                    ["titulo" => 'Deposite History','url' => '/deposite-history', "icono" => 'fa-book-open'],
+                    ["titulo" => 'Withdraw','url' => '/withdraw', "icono" => 'fa-money-bill-wave'],
+                    ["titulo" => 'Withdraw History','url' => '/withdraw-history', "icono" => 'fa-money-check'],
+                    ["titulo" => 'Transaction History','url' => '/transaction-history', "icono" => 'fa-book'],
+                    ["titulo" => 'Lotery','url' => '/lottery', "icono" => 'fa-award'],
                 ];
         
                 $menu_top = [
                     ["titulo" => 'Edit Profile','url' => '/profile', "icono" => 'fa-user'],
-                    ["titulo" => 'Referral Stadistic','url' => '/referral', "icono" => 'fa-user'],
+                    ["titulo" => 'Referral Stadistic','url' => '/referral', "icono" => 'fa-users'],
                     ["titulo" => 'Support Tickets','url' => '/tickets', "icono" => 'fa-tags'],
                 ];
             }
